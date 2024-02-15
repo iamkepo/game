@@ -27,18 +27,45 @@ const RegisterFormComponent = () => {
       return;
     }
     // Submit registration data
-    console.log('Registration data:', { username, email, password, selectedColor });
-    api.register({ username, email, password, selectedColor })
+    api.register({ email, password, username })
     .then(data=>{
       console.log(data);
       
+      fetchCurrentUser(); // Ferme le modal après l'inscription
     })
     .catch(err=> {
-      console.log(err);
-      
+      // console.log(err?.response?.data);
+      if (err?.response?.data?.error) {
+        setError(err?.response?.data?.error)
+      }
     })
-    handleClose(); // Ferme le modal après l'inscription
   };
+  const fetchCurrentUser = () => {
+    api.fetchCurrentUser()
+    .then(data=>{
+      console.log(data);
+      
+      handleClose(); // Ferme le modal après l'inscription
+    })
+    .catch(err=> {
+      if (err?.response?.data?.error) {
+        setError(err?.response?.data?.error)
+      }
+    })
+  }
+  const addUserToColor = () => {
+    api.addUserToColor({colorId: selectedColor})
+    .then(data=>{
+      console.log(data);
+      
+      handleClose(); // Ferme le modal après l'inscription
+    })
+    .catch(err=> {
+      if (err?.response?.data?.error) {
+        setError(err?.response?.data?.error)
+      }
+    })
+  }
 
   const handleColorSelect = (color: string) => {
     setSelectedColor(color);

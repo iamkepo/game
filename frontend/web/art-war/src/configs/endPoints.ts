@@ -3,4 +3,5 @@ export const endPoints = {
   register: "/auth/register",
   refreshToken: "/auth/refresh-token",
   me: "/user/me",
+  colorUser: "/color/user",
 };

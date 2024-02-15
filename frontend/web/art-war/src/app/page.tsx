@@ -13,10 +13,10 @@ import CelComponent from "@/components/CelComponent";
 
 export default function Home() {
   const [tab, setTab] = useState<any[]>([]);  
-  const [padding, setPadding] = useState<string>('0.5px');  
+  const [padding, setPadding] = useState<string>('2.5px');  
 
   useEffect(()=> {
-    var socketService = new SocketService('dcfghgjh');
+    var socketService = new SocketService();
     socketService.connect();
     let rows = [];
     let cels = [];
@@ -50,7 +50,7 @@ export default function Home() {
           <Col xs={3} id="sidebar" className="">
             <LeftSidebar />
           </Col>
-          <Col xs={6} id="page-content">
+          <Col xs={6} id="page-content" className="px-0 mt-2">
             <div id="board" className="mx-auto">
               <table>
                 <thead></thead>

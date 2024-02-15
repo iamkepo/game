@@ -155,11 +155,9 @@ class Request {
 
     return this;
  }
-  public then(callback: (response: AxiosResponse) => void): Promise<void> {
-    return client(this.config)
-      .then((response: AxiosResponse) => {
-        callback(response);
-      });
+  public async then(callback: (response: AxiosResponse) => void): Promise<void> {
+    const response_1 = await client(this.config);
+    callback(response_1);
   }
 
   public catch(callback: (error: AxiosError) => void): void {

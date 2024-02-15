@@ -19,16 +19,16 @@ const RightSidebar: React.FC<RightSidebarProps> = ({setZoom}) => {
           </Nav.Item>
           <Nav.Item>
             <select className="form-select" onChange={(e: any)=>setZoom(e)}>
-              <option defaultValue="0.5px">normal</option>
-              <option defaultValue="1px">2x</option>
-              <option defaultValue="1.5px">3x</option>
-              <option defaultValue="2px">4x</option>
-              <option defaultValue="2.5px">5x</option>
-              <option defaultValue="3px">6x</option>
-              <option defaultValue="3.5px">7x</option>
-              <option defaultValue="4px">8x</option>
-              <option defaultValue="4.5px">9x</option>
-              <option defaultValue="5px">10x</option>
+              <option value="0.5px">normal</option>
+              <option value="1px">2x</option>
+              <option value="1.5px">3x</option>
+              <option value="2px">4x</option>
+              <option value="2.5px">5x</option>
+              <option value="3px">6x</option>
+              <option value="3.5px">7x</option>
+              <option value="4px">8x</option>
+              <option value="4.5px">9x</option>
+              <option value="5px">10x</option>
             </select>
           </Nav.Item>
           <Nav.Link href="#anotherlink">Another Link</Nav.Link>
