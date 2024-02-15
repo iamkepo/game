@@ -1,4 +1,4 @@
-const TeamsModel = require('../models/teamsModel');
+import TeamsModel from '../models/teamsModel.js';
 
 class TeamsController extends TeamsModel{
 
@@ -245,4 +245,4 @@ class TeamsController extends TeamsModel{
   }
 }
 
-module.exports = TeamsController;
+export default TeamsController;

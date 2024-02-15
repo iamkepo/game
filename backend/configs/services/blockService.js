@@ -1,4 +1,4 @@
-const SHA256 = require('crypto-js/sha256');
+import SHA256 from 'crypto-js/sha256';
 
 class Block{
   constructor(data, previousHash=" "){
@@ -16,4 +16,4 @@ class Block{
   }   
 }
 
-module.exports = Block;
+export default Block;

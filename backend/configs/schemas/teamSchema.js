@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const teamSchema = Joi.object({
   _id: Joi.string(),
@@ -15,4 +15,4 @@ const teamSchema = Joi.object({
   update_date: Joi.date(),
 });
 
-module.exports = teamSchema;
+export default  teamSchema;

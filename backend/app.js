@@ -1,11 +1,16 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-const cors = require('cors');
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import cors from 'cors';
 
-var route = require('./routes/index');
-var { connect } = require('./configs/services/dbService');
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+import { dirname } from 'path';
+const __dirname = dirname(__filename);
+import { join } from 'path';
+
+import route from './routes/index.js';
+import { connect } from './configs/services/dbService.js';
 
 var app = express();
 
@@ -14,11 +19,11 @@ app.use(logger('dev'));
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(join(__dirname, 'public')));
 
 connect()
 //start routing
 
 route(app);
 
-module.exports = app;
+export default app;

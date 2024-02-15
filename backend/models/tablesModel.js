@@ -1,6 +1,6 @@
-const tableSchema = require('../configs/schemas/tableSchema');
-const RequestService = require('../configs/services/requestService');
-const { ObjectId } = require('mongodb');
+import tableSchema from '../configs/schemas/tableSchema.js';
+import RequestService from '../configs/services/requestService.js';
+import { ObjectId } from 'mongodb';
 
 class TablesModel extends RequestService {
   constructor() {
@@ -38,4 +38,4 @@ class TablesModel extends RequestService {
   
 }
 
-module.exports = TablesModel;
+export default TablesModel;

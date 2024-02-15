@@ -1,4 +1,4 @@
-const TablesModel = require("../models/tablesModel");
+import TablesModel from "../models/tablesModel.js";
 
 class TablesController extends TablesModel {
   static async createTable(req, res) {
@@ -110,4 +110,4 @@ class TablesController extends TablesModel {
   }
 }
 
-module.exports = TablesController;
+export default TablesController;

@@ -1,8 +1,8 @@
-const express = require('express');
-const TeamsController = require('../../controllers/teamsController');
-const authenticateToken = require('../../middlewares/authenticateToken');
+import { Router } from 'express';
+import TeamsController from '../../controllers/teamsController.js';
+import authenticateToken from '../../middlewares/authenticateToken.js';
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger
@@ -326,4 +326,4 @@ router.delete('/team/:id/remove-invite/:userId', authenticateToken, TeamsControl
  */
 router.delete('/team/:id/remove-request/:userId', authenticateToken, TeamsController.removeRequestTeam);
 
-module.exports = router;
+export default router;

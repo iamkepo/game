@@ -1,27 +1,31 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const UsersModel = require('../models/usersModel');
-const { generateAccessToken, generateRefreshToken } = require('../helpers/jwtUtils');
-const { userInitData } = require('../helpers/constants');
-require('dotenv').config();
+import jwt from 'jsonwebtoken';
+import { hash, compare } from 'bcrypt';
+import UsersModel from '../models/usersModel.js';
+import { generateAccessToken, generateRefreshToken } from '../helpers/jwtUtils.js';
+import { userInitData } from '../helpers/constants.js';
+import dotenv from 'dotenv';
+dotenv.config();
+
 const saltRounds = 10; // Number of salt rounds for bcrypt hashing
 
 class AuthController extends UsersModel {
   static async registerUser(req, res) {
     try {
-      let user = {...userInitData, ...req.body};
+      let user = { ...userInitData, ...req.body};
+      console.log(user);
       
       const validationResult = await this.validateSchema(user);
+        console.log(validationResult);
       if (validationResult.error) {
         return res.status(400).json({ error: validationResult.error});
       }
 
-      const existingUser = await this.findOne({ email: user.email });
+      const existingUser = await this.getOne({ email: user.email });
       if (existingUser) {
         return res.status(409).json({ error: 'User with this email already exists' });
       }
       // Hash the password
-      const hashedPassword = await bcrypt.hash(user.password, saltRounds);
+      const hashedPassword = await hash(user.password, saltRounds);
       user.password = hashedPassword;
 
       const newUser = await this.add(user);
@@ -40,13 +44,13 @@ class AuthController extends UsersModel {
   static async loginUser(req, res) {
     try {
       const { email, password } = req.body;
-      const user = await this.findOne({ email });
+      const user = await this.getOne({ email });
 
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
       }
       // Compare the provided password with the hashed password
-      const passwordMatch = await bcrypt.compare(password, user.password);
+      const passwordMatch = await compare(password, user.password);
 
       if (!passwordMatch) {
         return res.status(401).json({ error: 'Invalid password' });
@@ -84,4 +88,4 @@ class AuthController extends UsersModel {
 
 }
 
-module.exports = AuthController;
+export default AuthController;

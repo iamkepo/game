@@ -1,5 +1,5 @@
-const teamSchema = require('../configs/schemas/teamSchema');
-const RequestService = require('../configs/services/requestService');
+import teamSchema from '../configs/schemas/teamSchema.js';
+import RequestService from '../configs/services/requestService.js';
 
 
 class TeamsModel extends RequestService {
@@ -9,8 +9,8 @@ class TeamsModel extends RequestService {
 
 
   static async checkUserInTeam(id, userId) {
-    return await this.findOne({ users: { $in: [id, userId] } });
+    return await this.getOne({ users: { $in: [id, userId] } });
   }
 }
 
-module.exports = TeamsModel;
+export default TeamsModel;

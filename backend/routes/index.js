@@ -1,19 +1,19 @@
 
-const swaggerUi = require ('swagger-ui-express');
-const { swaggerSpec } = require ('../helpers/swagger');
+import { serve, setup } from 'swagger-ui-express';
+import { swaggerSpec } from '../helpers/swagger.js';
 
-var index = require('./pages/index');
+import index from './pages/index.js';
 
-var auth = require('./api/auth');
-var users = require('./api/users');
-var teams = require('./api/teams');
-var colors = require('./api/colors');
-var tables = require('./api/tables');
+import auth from './api/auth.js';
+import users from './api/users.js';
+import teams from './api/teams.js';
+import colors from './api/colors.js';
+import tables from './api/tables.js';
 
-module.exports = (app) => {
+export default (app) => {
   app.use('/', index);
 
-  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use('/api/docs', serve, setup(swaggerSpec));
 
   app.use('/api', auth);
 

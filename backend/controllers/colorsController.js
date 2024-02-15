@@ -1,5 +1,5 @@
-const ColorsModel = require('../models/colorsModel');
-const TeamsController= require('./teamsController');
+import ColorsModel from '../models/colorsModel.js';
+import T from './teamsController.js';
 
 class ColorsController extends ColorsModel {
 
@@ -16,10 +16,10 @@ class ColorsController extends ColorsModel {
 
   static async addUserToColor(req, res) {
     try {
-      const { userId, colorId } = req.body;
+      const { colorId } = req.body;
 
       // Ajouter une couleur à un utilisateur
-      const addedColor = await this.update(colorId, { user_id: userId });
+      const addedColor = await this.update(colorId, { user_id: req.user._id });
 
       res.status(200).json(addedColor);
     } catch (error) {
@@ -45,4 +45,4 @@ class ColorsController extends ColorsModel {
   }
 }
 
-module.exports = ColorsController;
+export default ColorsController;

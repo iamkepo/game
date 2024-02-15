@@ -1,6 +1,6 @@
-const colorSchema = require('../configs/schemas/colorSchema');
-const RequestService = require('../configs/services/requestService');
-const { randomColor, randomColorLimit } = require('../helpers/constants');
+import colorSchema from '../configs/schemas/colorSchema.js';
+import RequestService from '../configs/services/requestService.js';
+import { randomColor, randomColorLimit } from '../helpers/constants.js';
 
 class ColorsModel extends RequestService {
   constructor() {
@@ -26,4 +26,4 @@ class ColorsModel extends RequestService {
   }
 }
 
-module.exports = ColorsModel;
+export default ColorsModel;

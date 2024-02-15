@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 const tableSchema = Joi.object({
   _id: Joi.string(),
@@ -22,4 +22,4 @@ const tableSchema = Joi.object({
   update_date: Joi.date(),
 });
 
-module.exports = tableSchema;
+export default tableSchema;

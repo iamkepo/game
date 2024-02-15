@@ -1,4 +1,4 @@
-const Block = require("./blockService");
+import Block from "./blockService.js";
 
 class Chain{
   constructor(){
@@ -39,4 +39,4 @@ class Chain{
   }
 }
 
-module.exports = Chain;
+export default Chain;

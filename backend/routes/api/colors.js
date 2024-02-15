@@ -1,8 +1,8 @@
-const express = require('express');
-const ColorsController = require('../../controllers/colorsController');
-const authenticateToken = require('../../middlewares/authenticateToken');
+import { Router } from 'express';
+import ColorsController from '../../controllers/colorsController.js';
+import authenticateToken from '../../middlewares/authenticateToken.js';
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger
@@ -84,4 +84,4 @@ router.post('/color/user', authenticateToken, ColorsController.addUserToColor);
  */
 router.get('/color/:userId', authenticateToken, ColorsController.getColor);
 
-module.exports = router;
+export default router;

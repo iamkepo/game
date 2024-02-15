@@ -1,6 +1,6 @@
-const Joi = require('joi');
-const { getDatabase } = require('./dbService');
-const { ObjectId } = require('mongodb');
+import Joi from 'joi';
+import { ObjectId } from 'mongodb';
+import { getDatabase } from './dbService.js';
 
 /**
  * Classe représentant un contrôleur de base de données pour une collection MongoDB spécifique.
@@ -21,7 +21,7 @@ class RequestService {
    * @param {Object} data - Les données à ajouter à la collection.
    */
   static async validateSchema(data) {
-    const validationResult = await Joi.validate(data, this.schema)
+    const validationResult = await this.schema.validate(data)
     return validationResult;
   }
   
@@ -185,7 +185,7 @@ class RequestService {
    * @param {Object} projection - La projection pour inclure ou exclure des champs spécifiques.
    * @returns {Object} - Le premier document correspondant au filtre.
    */
-  static async findOne(filter, projection = {}) {
+  static async getOne(filter, projection = {}) {
     const result = await this.collection.findOne(filter, { projection });
     return result;
   }
@@ -216,4 +216,4 @@ class RequestService {
 
 }
 
-module.exports = RequestService;
+export default RequestService;

@@ -1,11 +1,13 @@
-const socketAuthenticateToken = require("../../middlewares/socketAuthenticateToken");
-const TablesModel = require("../../models/tablesModel");
-const UsersModel = require("../../models/usersModel");
+import { Server } from 'socket.io';
+import socketAuthenticateToken from "../../middlewares/socketAuthenticateToken.js";
+
+import TablesModel from "../../models/tablesModel.js";
+import UsersModel from "../../models/usersModel.js";
 
 
 function socketService(server) {
   // Initialize WebSocket connection
-  const io = require("socket.io")(server, {
+  const io = new Server(server, {
     cors: {
       origin: "*",
       methods: ["GET", "POST", "PUT", "PATCH"]
@@ -60,4 +62,4 @@ function socketService(server) {
 
 }
 
-module.exports = socketService;
+export default socketService;

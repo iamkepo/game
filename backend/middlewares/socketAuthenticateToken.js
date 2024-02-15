@@ -1,5 +1,7 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 function socketAuthenticateToken(req, res, next) {
   const isHandshake = req._query.sid === undefined;
@@ -33,4 +35,4 @@ function socketAuthenticateToken(req, res, next) {
   });
 }
 
-module.exports = socketAuthenticateToken;
+export default socketAuthenticateToken;

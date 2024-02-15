@@ -1,8 +1,8 @@
-const express = require('express');
-const UsersController = require('../../controllers/usersController');
-const authenticateToken = require('../../middlewares/authenticateToken');
+import { Router } from 'express';
+import UsersController from '../../controllers/usersController.js';
+import authenticateToken from '../../middlewares/authenticateToken.js';
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger
@@ -231,4 +231,4 @@ router.delete('/user/:id', authenticateToken, UsersController.deleteUser);
 
 router.patch('/user/:id/status', authenticateToken, UsersController.updateUserStatus);
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const UsersModel = require('../models/usersModel');
+import UsersModel from '../models/usersModel.js';
 
 class UsersController extends UsersModel{
 
@@ -128,4 +128,4 @@ class UsersController extends UsersModel{
   }
 }
 
-module.exports = UsersController;
+export default UsersController;

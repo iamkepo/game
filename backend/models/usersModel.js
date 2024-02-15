@@ -1,5 +1,5 @@
-const userSchema = require('../configs/schemas/userSchema');
-const RequestService = require('../configs/services/requestService');
+import userSchema from '../configs/schemas/userSchema.js';
+import RequestService from '../configs/services/requestService.js';
 
 class UsersModel extends RequestService {
   constructor() {
@@ -12,7 +12,7 @@ class UsersModel extends RequestService {
   };
 
   static async socketGetUser(socket) {
-    const result = await this.findOne({ socket_id: socket?.id }, { password: 0 });
+    const result = await this.getOne({ socket_id: socket?.id }, { password: 0 });
     return result;
   };
 
@@ -28,4 +28,4 @@ class UsersModel extends RequestService {
   
 }
 
-module.exports = UsersModel;
+export default UsersModel;

@@ -1,9 +1,9 @@
-const express = require('express');
-const TablesController = require('../../controllers/TablesController');
-const authenticateToken = require('../../middlewares/authenticateToken');
-const freeAuthenticateToken = require('../../middlewares/freeAuthenticateToken');
+import { Router } from 'express';
+import TablesController from '../../controllers/TablesController.js';
+import authenticateToken from '../../middlewares/authenticateToken.js';
+import freeAuthenticateToken from '../../middlewares/freeAuthenticateToken.js';
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger
@@ -132,4 +132,4 @@ router.get('/table/:tableId/cellules', authenticateToken, TablesController.getCe
  */
 router.get('/tables', freeAuthenticateToken, TablesController.getAllTables);
 
-module.exports = router;
+export default router;

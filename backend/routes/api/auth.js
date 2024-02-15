@@ -1,7 +1,7 @@
-const express = require('express');
-const AuthController = require('../../controllers/authController');
+import { Router } from 'express';
+import AuthController from '../../controllers/authController.js';
 
-const router = express.Router();
+const router = Router();
 
 /**
  * @swagger
@@ -184,4 +184,4 @@ router.post('/auth/login', AuthController.loginUser);
 
 router.post('/auth/refresh-token', AuthController.refreshTokenUser);
 
-module.exports = router;
+export default router;
