@@ -1,7 +1,10 @@
-import { Router } from 'express';
+import express from 'express';
 import AuthController from '../../controllers/authController.js';
 
-const router = Router();
+const router = express.Router();
+
+const authController = new AuthController();
+
 
 /**
  * @swagger
@@ -81,7 +84,7 @@ const router = Router();
  *                     type: string
  */
 
-router.post('/auth/register', AuthController.registerUser);
+router.post('/auth/register', authController.registerUser);
 
 /**
  * @swagger
@@ -133,7 +136,7 @@ router.post('/auth/register', AuthController.registerUser);
  *                     type: string
  */
 
-router.post('/auth/login', AuthController.loginUser);
+router.post('/auth/login', authController.loginUser);
 
 /**
  * @swagger
@@ -182,6 +185,6 @@ router.post('/auth/login', AuthController.loginUser);
  *                     type: string
  */
 
-router.post('/auth/refresh-token', AuthController.refreshTokenUser);
+router.post('/auth/refresh-token', authController.refreshTokenUser);
 
 export default router;

@@ -1,8 +1,9 @@
-import { Router } from 'express';
+import express from 'express';
 import TeamsController from '../../controllers/teamsController.js';
 import authenticateToken from '../../middlewares/authenticateToken.js';
 
-const router = Router();
+const router = express.Router();
+const teamsController = new TeamsController();
 
 /**
  * @swagger
@@ -30,7 +31,7 @@ const router = Router();
  *         description: Bad request
  */
 
-router.post('/team', authenticateToken, TeamsController.createTeam);
+router.post('/team', authenticateToken, teamsController.createTeam);
 
 /**
  * @swagger
@@ -51,7 +52,7 @@ router.post('/team', authenticateToken, TeamsController.createTeam);
  *               items:
  *                 
  */
-router.get('/teams', authenticateToken, TeamsController.getAllTeams);
+router.get('/teams', authenticateToken, teamsController.getAllTeams);
 
 /**
  * @swagger
@@ -79,7 +80,7 @@ router.get('/teams', authenticateToken, TeamsController.getAllTeams);
  *       404:
  *         description: Team not found
  */
-router.get('/team/:id', authenticateToken, TeamsController.getTeam);
+router.get('/team/:id', authenticateToken, teamsController.getTeam);
 
 /**
  * @swagger
@@ -107,7 +108,7 @@ router.get('/team/:id', authenticateToken, TeamsController.getTeam);
  *       404:
  *         description: Team not found
  */
-router.put('/team/:id', authenticateToken, TeamsController.updateTeam);
+router.put('/team/:id', authenticateToken, teamsController.updateTeam);
 
 /**
  * @swagger
@@ -131,7 +132,7 @@ router.put('/team/:id', authenticateToken, TeamsController.updateTeam);
  *       404:
  *         description: Team not found
  */
-router.delete('/team/:id', authenticateToken, TeamsController.deleteTeam);
+router.delete('/team/:id', authenticateToken, teamsController.deleteTeam);
 
 /**
  * @swagger
@@ -163,7 +164,7 @@ router.delete('/team/:id', authenticateToken, TeamsController.deleteTeam);
  *       404:
  *         description: Team not found
  */
-router.patch('/team/:id/status', authenticateToken, TeamsController.updateTeamStatus);
+router.patch('/team/:id/status', authenticateToken, teamsController.updateTeamStatus);
 
 /**
  * @swagger
@@ -187,7 +188,7 @@ router.patch('/team/:id/status', authenticateToken, TeamsController.updateTeamSt
  *       404:
  *         description: Team not found
  */
-router.patch('/team/:id/request', authenticateToken, TeamsController.requestTeam);
+router.patch('/team/:id/request', authenticateToken, teamsController.requestTeam);
 
 /**
  * @swagger
@@ -216,7 +217,7 @@ router.patch('/team/:id/request', authenticateToken, TeamsController.requestTeam
  *       404:
  *         description: Team not found
  */
-router.patch('/team/:id/invite', authenticateToken, TeamsController.inviteTeam);
+router.patch('/team/:id/invite', authenticateToken, teamsController.inviteTeam);
 
 /**
  * @swagger
@@ -240,7 +241,7 @@ router.patch('/team/:id/invite', authenticateToken, TeamsController.inviteTeam);
  *       404:
  *         description: Team not found
  */
-router.patch('/team/:id/accept-request', authenticateToken, TeamsController.acceptRequestTeam);
+router.patch('/team/:id/accept-request', authenticateToken, teamsController.acceptRequestTeam);
 
 /**
  * @swagger
@@ -264,7 +265,7 @@ router.patch('/team/:id/accept-request', authenticateToken, TeamsController.acce
  *       404:
  *         description: Team not found
  */
-router.patch('/team/:id/accept-invite', authenticateToken, TeamsController.acceptJoinTeam);
+router.patch('/team/:id/accept-invite', authenticateToken, teamsController.acceptJoinTeam);
 
 /**
  * @swagger
@@ -294,7 +295,7 @@ router.patch('/team/:id/accept-invite', authenticateToken, TeamsController.accep
  *       404:
  *         description: Team not found
  */
-router.delete('/team/:id/remove-invite/:userId', authenticateToken, TeamsController.removeInvitationTeam);
+router.delete('/team/:id/remove-invite/:userId', authenticateToken, teamsController.removeInvitationTeam);
 
 /**
  * @swagger
@@ -324,6 +325,6 @@ router.delete('/team/:id/remove-invite/:userId', authenticateToken, TeamsControl
  *       404:
  *         description: Team not found
  */
-router.delete('/team/:id/remove-request/:userId', authenticateToken, TeamsController.removeRequestTeam);
+router.delete('/team/:id/remove-request/:userId', authenticateToken, teamsController.removeRequestTeam);
 
 export default router;

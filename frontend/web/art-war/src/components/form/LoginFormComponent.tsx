@@ -1,3 +1,4 @@
+"use client";
 // LoginFormComponent.tsx
 
 import { useState } from 'react';
@@ -6,29 +7,31 @@ import PasswordInputComponent from '../PasswordInputComponent';
 import ErrorAlertComponent from '../ErrorAlertComponent';
 import { api } from '@/services/api';
 
-const LoginFormComponent = () => {
-  const [show, setShow] = useState(false);
+interface LoginFormProps {
+  show: boolean;
+  handleClose: () => void;
+  handleShow: () => void;
+}
+const LoginFormComponent: React.FC<LoginFormProps> = ({show, handleClose, handleShow}) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    console.log('Login data:', { email, password });
     api.login({ email, password })
-    .then(data=>{
-      console.log(data);
+    .then((data: any)=>{
+      // console.log(data);
+      window.localStorage.setItem('refreshToken', data?.refreshToken)
+      handleClose();
+    })
+    .catch(err=> {      
+      if (err?.response?.data?.error) {
+        setError(err?.response?.data?.error)
+      }
       
     })
-    .catch(err=> {
-      console.log(err);
-      
-    })
-    handleClose(); // Close the modal after login
   };
   const handleErrorClose = () => {
     setError(null);

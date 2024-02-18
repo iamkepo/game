@@ -2,9 +2,9 @@ import Joi from 'joi';
 
 const userSchema = Joi.object({
   _id: Joi.string().optional(),
+  username: Joi.string().alphanum().min(3).max(30).required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-  username: Joi.string().required(),
   pic: Joi.string().optional(),
   bio: Joi.string().optional(),
   config: Joi.object({

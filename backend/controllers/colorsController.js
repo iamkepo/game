@@ -1,12 +1,12 @@
-import ColorsModel from '../models/colorsModel.js';
-import T from './teamsController.js';
+import {colorsService, colorsModel} from '../models/colorsModel.js';
+import { teamsModel } from '../models/teamsModel.js';
 
-class ColorsController extends ColorsModel {
+class ColorsController {
 
-  static async getColors(req, res) {
+  async getColors(req, res) {
     try {
       // Récupérer des couleurs aléatoires non attribuées
-      const unassignedColors = this.getUnassignedColors();
+      const unassignedColors = colorsModel.getUnassignedColors();
 
       res.status(200).json(unassignedColors);
     } catch (error) {
@@ -14,12 +14,12 @@ class ColorsController extends ColorsModel {
     }
   }
 
-  static async addUserToColor(req, res) {
+  async addUserToColor(req, res) {
     try {
       const { colorId } = req.body;
 
       // Ajouter une couleur à un utilisateur
-      const addedColor = await this.update(colorId, { user_id: req.user._id });
+      const addedColor = await colorsService.update(colorId, { user_id: req.user._id });
 
       res.status(200).json(addedColor);
     } catch (error) {
@@ -27,11 +27,11 @@ class ColorsController extends ColorsModel {
     }
   }
 
-  static async getColor(req, res) {
+  async getColor(req, res) {
     try {
       const { userId } = req.params;
       
-      const resultatCheck = await TeamsController.checkUserInTeam(req.user._id, userId)
+      const resultatCheck = await teamsModel.checkUserInTeam(req.user._id, userId)
       if (!resultatCheck) {
         return res.status(404).json({ error: 'This user is not in same team with you' });
       }

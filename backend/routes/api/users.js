@@ -1,8 +1,10 @@
-import { Router } from 'express';
+import express from 'express';
 import UsersController from '../../controllers/usersController.js';
 import authenticateToken from '../../middlewares/authenticateToken.js';
 
-const router = Router();
+
+const usersController = new UsersController()
+const router = express.Router();
 
 /**
  * @swagger
@@ -22,7 +24,7 @@ const router = Router();
  *         description: Successful operation
  */
 
-router.get('/user/me', authenticateToken, UsersController.getUserMe);
+router.get('/user/me', authenticateToken, usersController.getUserMe);
 
 /**
  * @swagger
@@ -35,7 +37,7 @@ router.get('/user/me', authenticateToken, UsersController.getUserMe);
  *         description: Successful operation
  */
 
-router.get('/users', authenticateToken, UsersController.getAllUsers);
+router.get('/users', authenticateToken, usersController.getAllUsers);
 
 /**
  * @swagger
@@ -76,7 +78,7 @@ router.get('/users', authenticateToken, UsersController.getAllUsers);
  *                     type: string
  */
 
-router.get('/user/:id', authenticateToken, UsersController.getUser);
+router.get('/user/:id', authenticateToken, usersController.getUser);
 
 /**
  * @swagger
@@ -126,7 +128,7 @@ router.get('/user/:id', authenticateToken, UsersController.getUser);
  *                     type: string
  */
 
-router.put('/user/:id', authenticateToken, UsersController.updateUser);
+router.put('/user/:id', authenticateToken, usersController.updateUser);
 
 /**
  * @swagger
@@ -170,7 +172,7 @@ router.put('/user/:id', authenticateToken, UsersController.updateUser);
  *                     type: string
  */
 
-router.delete('/user/:id', authenticateToken, UsersController.deleteUser);
+router.delete('/user/:id', authenticateToken, usersController.deleteUser);
 
 /**
  * @swagger
@@ -229,6 +231,6 @@ router.delete('/user/:id', authenticateToken, UsersController.deleteUser);
  *                     type: string
  */
 
-router.patch('/user/:id/status', authenticateToken, UsersController.updateUserStatus);
+router.patch('/user/:id/status', authenticateToken, usersController.updateUserStatus);
 
 export default router;

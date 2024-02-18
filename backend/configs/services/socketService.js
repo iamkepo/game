@@ -1,8 +1,8 @@
 import { Server } from 'socket.io';
 import socketAuthenticateToken from "../../middlewares/socketAuthenticateToken.js";
 
-import TablesModel from "../../models/tablesModel.js";
-import UsersModel from "../../models/usersModel.js";
+import { usersService, usersModel } from '../../models/usersModel.js';
+import { tablesService, tablesModel } from '../../models/tablesModel.js';
 
 
 function socketService(server) {
@@ -23,8 +23,8 @@ function socketService(server) {
     switch (socket?.request?.message) {
       case "valid token":
         console.log('A user connected');
-        // const user = await UsersModel.socketGetUserById(socket?.request?.user._id);
-        // const updateResult = await UsersModel.socketConnectUser(socket);
+        // const user = await usersModel.socketGetUserById(socket?.request?.user._id);
+        // const updateResult = await usersModel.socketConnectUser(socket);
         // socket.broadcast.emit('userIsConnect', user);
         break;
 
@@ -36,7 +36,7 @@ function socketService(server) {
 
     socket.on('onclick', async(tableId, dataCellule) => {
       //console.log(onclick);
-      // const userId = await UsersModel.findOne({socket_id: socket.id}, { _id: 1 });
+      // const userId = await usersService.getOne({socket_id: socket.id}, { _id: 1 });
 
       // const data = await TablesModel.addOneCellule(tableId, dataCellule);
 
@@ -45,7 +45,7 @@ function socketService(server) {
 
     socket.on('onmouseenter', async(tableId, dataCellules) => {
       //console.log(click);
-      // const userId = await UsersModel.findOne({socket_id: socket.id}, { _id: 1 });
+      // const userId = await usersService.getOne({socket_id: socket.id}, { _id: 1 });
       
       // const data = await TablesModel.addManyCellules(tableId, dataCellules);
 

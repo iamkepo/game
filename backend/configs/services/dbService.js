@@ -17,7 +17,10 @@ export async function connect() {
   }
 }
 
-export function getDatabase() {
-  return client.db(process.env.MONGODB_NAME);
+export const getTab = {
+  users: client.db(process.env.MONGODB_NAME).collection('users'),
+  teams: client.db(process.env.MONGODB_NAME).collection('teams'),
+  colors: client.db(process.env.MONGODB_NAME).collection('colors'),
+  tables: client.db(process.env.MONGODB_NAME).collection('tables'),
 }
 

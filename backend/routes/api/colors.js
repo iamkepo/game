@@ -1,8 +1,9 @@
-import { Router } from 'express';
+import express from 'express';
 import ColorsController from '../../controllers/colorsController.js';
 import authenticateToken from '../../middlewares/authenticateToken.js';
 
-const router = Router();
+const router = express.Router();
+const colorsController = new ColorsController();
 
 /**
  * @swagger
@@ -32,7 +33,7 @@ const router = Router();
  *       500:
  *         description: Erreur interne du serveur.
  */
-router.get('/colors/unassigned', ColorsController.getColors);
+router.get('/colors/unassigned', colorsController.getColors);
 
 /**
  * @swagger
@@ -60,7 +61,7 @@ router.get('/colors/unassigned', ColorsController.getColors);
  *       500:
  *         description: Erreur interne du serveur.
  */
-router.post('/color/user', authenticateToken, ColorsController.addUserToColor);
+router.post('/color/user', authenticateToken, colorsController.addUserToColor);
 
 /**
  * @swagger
@@ -82,6 +83,6 @@ router.post('/color/user', authenticateToken, ColorsController.addUserToColor);
  *       500:
  *         description: Erreur interne du serveur.
  */
-router.get('/color/:userId', authenticateToken, ColorsController.getColor);
+router.get('/color/:userId', authenticateToken, colorsController.getColor);
 
 export default router;

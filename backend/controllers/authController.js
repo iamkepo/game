@@ -1,50 +1,49 @@
 import jwt from 'jsonwebtoken';
 import { hash, compare } from 'bcrypt';
-import UsersModel from '../models/usersModel.js';
+import { usersService, usersModel } from '../models/usersModel.js';
 import { generateAccessToken, generateRefreshToken } from '../helpers/jwtUtils.js';
-import { userInitData } from '../helpers/constants.js';
+import { saltRounds, userInitData } from '../helpers/constants.js';
+import { validationError } from '../helpers/errorsHandler.js';
+
 import dotenv from 'dotenv';
 dotenv.config();
 
-const saltRounds = 10; // Number of salt rounds for bcrypt hashing
 
-class AuthController extends UsersModel {
-  static async registerUser(req, res) {
+export default class AuthController {
+  async registerUser(req, res) {
     try {
-      let user = { ...userInitData, ...req.body};
-      console.log(user);
       
-      const validationResult = await this.validateSchema(user);
-        console.log(validationResult);
-      if (validationResult.error) {
-        return res.status(400).json({ error: validationResult.error});
+      const validationResult = await usersModel.validateSchema(req.body);
+      if (validationResult?.error) {
+        return res.status(400).json({ error: validationError(validationResult.error)});
       }
 
-      const existingUser = await this.getOne({ email: user.email });
+      const existingUser = await usersService.getOne({ email: req.body.email });
       if (existingUser) {
         return res.status(409).json({ error: 'User with this email already exists' });
       }
-      // Hash the password
-      const hashedPassword = await hash(user.password, saltRounds);
-      user.password = hashedPassword;
 
-      const newUser = await this.add(user);
+      let credentials = { ...userInitData, ...req.body};
 
-      delete newUser.password;
+      const hashedPassword = await hash(credentials.password, saltRounds);
+      credentials.password = hashedPassword;
 
-      const accessToken = generateAccessToken(newUser);
-      const refreshToken = generateRefreshToken(newUser);
+      const newUser = await usersService.add(credentials);
+      if (!newUser.insertedId) {
+        return res.status(405).json({ error: 'User creation failed' });
+      }
 
-      res.status(201).json({ accessToken, refreshToken });
+      res.status(201).json(newUser);
     } catch (error) {
+      // console.log(error);
       res.status(400).json({ error: `Registration failed: ${error.message}` });
     }
   }
 
-  static async loginUser(req, res) {
+  async loginUser(req, res) {
     try {
       const { email, password } = req.body;
-      const user = await this.getOne({ email });
+      const user = await usersService.getOne({ email });
 
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
@@ -68,7 +67,7 @@ class AuthController extends UsersModel {
   }
 
 
-  static async refreshTokenUser(req, res) {
+  async refreshTokenUser(req, res) {
     try {
       const refreshToken = req.body.refreshToken;
 
@@ -87,5 +86,3 @@ class AuthController extends UsersModel {
   
 
 }
-
-export default AuthController;

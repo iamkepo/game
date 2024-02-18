@@ -21,6 +21,20 @@ const services = {
       });
    },
 
+   getColorsUnassigned() {
+      return new Promise((resolve, reject) => {
+         new Request()
+            .append(endPoints.colorsUnassigned)
+            .method(HttpRequestType.GET)
+            .then(async (response: AxiosResponse) => {
+               resolve(response.data);
+            })
+            .catch((error) => {
+               reject(error);
+            });
+      });
+   },
+
 };
 
 export default services;

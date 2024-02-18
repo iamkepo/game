@@ -1,6 +1,5 @@
-import Joi from 'joi';
 import { ObjectId } from 'mongodb';
-import { getDatabase } from './dbService.js';
+import { getTab } from './dbService.js';
 
 /**
  * Classe représentant un contrôleur de base de données pour une collection MongoDB spécifique.
@@ -9,30 +8,20 @@ class RequestService {
   /**
    * Constructeur de la classe.
    * @param {string} collectionName - Le nom de la collection MongoDB à manipuler.
-   * @param {object} schema
    */
-  constructor(collectionName, schema) {
-    this.collection = getDatabase().collection(collectionName);
-    this.schema = schema;
+  constructor(collectionName) {
+    this.collection = getTab[collectionName];
   }
 
-  /**
-   * Ajoute un nouveau document à la collection.
-   * @param {Object} data - Les données à ajouter à la collection.
-   */
-  static async validateSchema(data) {
-    const validationResult = await this.schema.validate(data)
-    return validationResult;
-  }
   
   /**
    * Ajoute un nouveau document à la collection.
    * @param {Object} data - Les données à ajouter à la collection.
    * @returns {Object} - Le document ajouté.
    */
-  static async add(data) {
+  async add(data) {
     const result = await this.collection.insertOne(data);
-    return result.ops[0];
+    return result;
   }
   
   /**
@@ -40,7 +29,7 @@ class RequestService {
    * @param {Array} dataArray - Un tableau de données à ajouter à la collection.
    * @returns {Array} - Un tableau des documents ajoutés.
    */
-  static async addMany(dataArray) {
+  async addMany(dataArray) {
     // Utilise la méthode insertMany pour ajouter plusieurs documents à la collection
     const result = await this.collection.insertMany(dataArray);
 
@@ -54,7 +43,7 @@ class RequestService {
    * @param {Object} data - Les données à mettre à jour.
    * @returns {boolean} - Indique si la mise à jour a réussi.
    */
-  static async update(id, data) {
+  async update(id, data) {
     const result = await this.collection.updateOne({ _id: ObjectId(id) }, { $set: data });
     return result.modifiedCount > 0;
   }
@@ -65,7 +54,7 @@ class RequestService {
    * @param {Object} update - Les modifications à apporter aux documents correspondants.
    * @returns {number} - Le nombre de documents mis à jour.
    */
-  static async updateMany(filter, update) {
+  async updateMany(filter, update) {
     // Utilise la méthode updateMany pour mettre à jour plusieurs documents de la collection
     const result = await this.collection.updateMany(filter, update);
 
@@ -79,7 +68,7 @@ class RequestService {
    * @param {string} id - L'ID du document à supprimer.
    * @returns {boolean} - Indique si la suppression a réussi.
    */
-  static async delete(id) {
+  async delete(id) {
     const result = await this.collection.deleteOne({ _id: ObjectId(id) });
     return result.deletedCount > 0;
   }
@@ -89,7 +78,7 @@ class RequestService {
    * @param {Object} filter - Le filtre pour la suppression.
    * @returns {number} - Le nombre de documents supprimés.
    */
-  static async deleteMany(filter) {
+  async deleteMany(filter) {
     // Utilise la méthode deleteMany pour supprimer plusieurs documents de la collection
     const result = await this.collection.deleteMany(filter);
 
@@ -103,7 +92,7 @@ class RequestService {
    * @param {Object} projection - La projection pour inclure ou exclure des champs spécifiques.
    * @returns {Object} - Le document récupéré.
    */
-  static async get(id, projection = {}) {
+  async get(id, projection = {}) {
     const result = await this.collection.findOne({ _id: ObjectId(id) }, { projection });
     return result;
   }
@@ -115,7 +104,7 @@ class RequestService {
    * @param {Object} projection - La projection pour inclure ou exclure des champs spécifiques.
    * @returns {Array} - Un tableau de documents correspondant aux critères.
    */
-  static async getAll(filter = {}, options = {}, projection = {}) {
+  async getAll(filter = {}, options = {}, projection = {}) {
     const result = await this.collection.find(filter, options).toArray();
     return result;
   }
@@ -128,7 +117,7 @@ class RequestService {
    * @param {string} sortOrder - The sort order ('asc' for ascending, 'desc' for descending).
    * @returns {Array} - An array of documents sorted by date.
    */
-  static async getSortedByDate(filter = {}, dateField, projection = {}, sortOrder = 'asc') {
+  async getSortedByDate(filter = {}, dateField, projection = {}, sortOrder = 'asc') {
     const sortOptions = { [dateField]: sortOrder === 'asc' ? 1 : -1 };
     const result = await this.collection.find(filter).sort(sortOptions).project(projection).toArray();
     return result;
@@ -139,7 +128,7 @@ class RequestService {
    * @param {Object} filter - Le filtre pour la requête.
    * @returns {number} - Le nombre de documents correspondant au filtre.
    */
-  static async getCount(filter = {}) {
+  async getCount(filter = {}) {
     const count = await this.collection.countDocuments(filter);
     return count;
   }
@@ -149,7 +138,7 @@ class RequestService {
    * @param {Array} pipeline - Le pipeline d'opérations d'agrégation.
    * @returns {Array} - Le résultat de l'opération d'agrégation.
    */
-  static async aggregate(pipeline) {
+  async aggregate(pipeline) {
     const result = await this.collection.aggregate(pipeline).toArray();
     return result;
   }
@@ -161,7 +150,7 @@ class RequestService {
    * @param {Object} projection - La projection pour inclure ou exclure des champs spécifiques.
    * @returns {Array} - Un tableau de documents triés correspondant aux critères.
    */
-  static async findAndSort(filter = {}, sortOptions = {}, projection = {}) {
+  async findAndSort(filter = {}, sortOptions = {}, projection = {}) {
     const result = await this.collection.find(filter).sort(sortOptions).project(projection).toArray();
     return result;
   }
@@ -174,7 +163,7 @@ class RequestService {
    * @param {Object} projection - La projection pour inclure ou exclure des champs spécifiques.
    * @returns {Object} - Le document avant la mise à jour.
    */
-  static async findAndUpdate(filter, update, options = {}, projection = {}) {
+  async findAndUpdate(filter, update, options = {}, projection = {}) {
     const result = await this.collection.findOneAndUpdate(filter, update, { ...options, projection });
     return result.value;
   }
@@ -185,7 +174,7 @@ class RequestService {
    * @param {Object} projection - La projection pour inclure ou exclure des champs spécifiques.
    * @returns {Object} - Le premier document correspondant au filtre.
    */
-  static async getOne(filter, projection = {}) {
+  async getOne(filter, projection = {}) {
     const result = await this.collection.findOne(filter, { projection });
     return result;
   }
@@ -196,7 +185,7 @@ class RequestService {
    * @param {Object} filter - Le filtre pour la recherche.
    * @returns {Array} - Un tableau de valeurs distinctes pour le champ spécifié.
    */
-  static async distinct(fieldName, filter = {}) {
+  async distinct(fieldName, filter = {}) {
     const result = await this.collection.distinct(fieldName, filter);
     return result;
   }
@@ -208,7 +197,7 @@ class RequestService {
    * @param {string} dateField - Le champ utilisé pour trier les documents par date.
    * @returns {Object} - Le dernier élément de la collection.
    */
-  static async getLastElementByDate(filter, dateField, projection = {}) {
+  async getLastElementByDate(filter, dateField, projection = {}) {
     // Utilise la méthode findOne pour récupérer le dernier élément trié par date descendant
     const lastElement = await this.collection.findOne(filter, { sort: { [dateField]: -1 } }, { projection });
     return lastElement;

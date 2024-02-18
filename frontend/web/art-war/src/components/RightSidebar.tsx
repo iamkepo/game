@@ -1,21 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
 import RegisterFormComponent from './form/RegisterFormComponent';
 import LoginFormComponent from './form/LoginFormComponent';
+import { api } from '@/services/api';
 
 interface RightSidebarProps {
   setZoom: (value: string) => void;
 }
 
 const RightSidebar: React.FC<RightSidebarProps> = ({setZoom}) => {
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+ 
   return (
     <Navbar bg="light" expand="lg" id="sidebar" className="">
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="flex-column">
           <Nav.Item>
-            <RegisterFormComponent />
-            <LoginFormComponent />
+            <RegisterFormComponent 
+              show={showRegister}
+              handleShow={()=> setShowRegister(true)} 
+              handleClose={()=> setShowRegister(false)}
+              setShowLogin={()=> setShowLogin(true)}
+            />
+            <LoginFormComponent 
+              show={showLogin}
+              handleShow={()=> setShowLogin(true)} 
+              handleClose={()=> setShowLogin(false)}
+            />
           </Nav.Item>
           <Nav.Item>
             <select className="form-select" onChange={(e: any)=>setZoom(e)}>

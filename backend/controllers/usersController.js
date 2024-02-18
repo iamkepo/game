@@ -1,8 +1,9 @@
-import UsersModel from '../models/usersModel.js';
+import { validationError } from '../helpers/errorsHandler.js';
+import { usersService, usersModel } from '../models/usersModel.js';
 
-class UsersController extends UsersModel{
+export default class UsersController {
 
-  static async getUserMe(req, res) {
+  async getUserMe(req, res) {
     try {
       res.status(201).json(req.user);
     } catch (error) {
@@ -10,23 +11,23 @@ class UsersController extends UsersModel{
     }
   }
 
-  static async createUser(req, res) {
+  async createUser(req, res) {
     try {
-      const validationResult = await this.validateSchema(req.body);
-      if (validationResult.error) {
-        return res.status(400).json({ error: validationResult.error});
+      const validationResult = await usersModel.validateSchema(req.body);
+      if (validationResult?.error) {
+        return res.status(400).json({ error: validationError(validationResult.error)});
       }
-      const newUser = await this.add(req.body);
+      const newUser = await usersService.add(req.body);
       res.status(201).json(newUser);
     } catch (error) {
       res.status(400).json({ error: `User creation failed: ${error.message}` });
     }
   }
 
-  static async getAllUsers(req, res) {
+  async getAllUsers(req, res) {
     try {
       // Get all users from the database
-      const allUsers = await this.getAll({}, {}, { password: 0 });
+      const allUsers = await usersService.getAll({}, {}, { password: 0 });
 
       res.status(200).json(allUsers);
     } catch (error) {
@@ -34,10 +35,10 @@ class UsersController extends UsersModel{
     }
   }
 
-  static async getUser(req, res) {
+  async getUser(req, res) {
     try {
       const userId = req.params.id;
-      const user = await this.get(userId, { password: 0 });
+      const user = await usersService.get(userId, { password: 0 });
 
       if (!user) {
         return res.status(404).json({ error: 'User not found' });
@@ -49,16 +50,16 @@ class UsersController extends UsersModel{
     }
   }
 
-  static async updateUser(req, res) {
+  async updateUser(req, res) {
     try {
       const userId = req.params.id;
       
-      const validationResult = await this.validateSchema(req.body);
-      if (validationResult.error) {
-        return res.status(400).json({ error: validationResult.error});
+      const validationResult = await usersModel.validateSchema(req.body);
+      if (validationResult?.error) {
+        return res.status(400).json({ error: validationError(validationResult.error)});
       }
 
-      const updateResult = await this.update(userId, req.body);
+      const updateResult = await usersService.update(userId, req.body);
 
       if (!updateResult) {
         return res.status(404).json({ error: 'User not found' });
@@ -70,10 +71,10 @@ class UsersController extends UsersModel{
     }
   }
 
-  static async deleteUser(req, res) {
+  async deleteUser(req, res) {
     try {
       const userId = req.params.id;
-      const deleteResult = await this.delete(userId);
+      const deleteResult = await usersService.delete(userId);
 
       if (!deleteResult) {
         return res.status(404).json({ error: 'User not found' });
@@ -85,7 +86,7 @@ class UsersController extends UsersModel{
     }
   }
 
-  static async updateUserStatus(req, res) {
+  async updateUserStatus(req, res) {
     try {
       const userId = req.params.id;
 
@@ -97,7 +98,7 @@ class UsersController extends UsersModel{
       }
 
       // Update the user status
-      const updatedUser = await this.findAndUpdate(
+      const updatedUser = await usersService.findAndUpdate(
         { _id: userId },
         { $set: { status: req.body.status } },
         { returnDocument: 'after' }, // Return the modified document
@@ -114,12 +115,12 @@ class UsersController extends UsersModel{
     }
   }  
   
-  static async addColorToUser(req, res) {
+  async addColorToUser(req, res) {
     try {
       const { userId, colorId } = req.body;
 
       // Ajouter une couleur à un utilisateur
-      const addedColor = await this.assignColorToUser(userId, colorId);
+      const addedColor = await usersService.assignColorToUser(userId, colorId);
 
       res.status(200).json(addedColor);
     } catch (error) {
@@ -127,5 +128,3 @@ class UsersController extends UsersModel{
     }
   }
 }
-
-export default UsersController;

@@ -44,7 +44,8 @@ class Request {
   private async handleResponseError(error: any) {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest?._retry) {
+    if (error.response?.status === 401 && !originalRequest?._retry && !error.config.baseURL.includes("login")) {
+      
       if (this.isRefreshing) {
         return new Promise<string | null>((resolve, reject) => {
           this.failedQueue.push({ resolve, reject });

@@ -1,31 +1,38 @@
 import userSchema from '../configs/schemas/userSchema.js';
 import RequestService from '../configs/services/requestService.js';
 
-class UsersModel extends RequestService {
-  constructor() {
-    super('users', userSchema);
+export const usersService = new RequestService('users');
+
+class UsersModel {
+  /**
+   * Ajoute un nouveau document à la collection.
+   * @param {Object} data - Les données à ajouter à la collection.
+   */
+ async validateSchema(data) {
+    const validationResult = userSchema.validate(data)
+    return validationResult;
   }
 
-  static async socketGetUserById(userId) {
-    const result = await this.get(userId, { password: 0 });
+ async socketGetUserById(userId) {
+    const result = await usersService.get(userId, { password: 0 });
     return result;
   };
 
-  static async socketGetUser(socket) {
-    const result = await this.getOne({ socket_id: socket?.id }, { password: 0 });
+ async socketGetUser(socket) {
+    const result = await usersService.getOne({ socket_id: socket?.id }, { password: 0 });
     return result;
   };
 
-  static async socketConnectUser (socket) {
-    const updateResult = await this.update(socket?.request?.user._id, { socket_id: socket?.id });
+ async socketConnectUser (socket) {
+    const updateResult = await usersService.update(socket?.request?.user._id, { socket_id: socket?.id });
     return updateResult
   };
 
-  static async socketdisconnectUser(socket) {
-    const updateResult = await this.update(socket?.id, { socket_id: undefined });
+ async socketdisconnectUser(socket) {
+    const updateResult = await usersService.update(socket?.id, { socket_id: undefined });
     return updateResult;
   };
   
-}
+};
 
-export default UsersModel;
+export const usersModel = new UsersModel()

@@ -1,9 +1,10 @@
-import { Router } from 'express';
+import express from 'express';
 import TablesController from '../../controllers/TablesController.js';
 import authenticateToken from '../../middlewares/authenticateToken.js';
 import freeAuthenticateToken from '../../middlewares/freeAuthenticateToken.js';
 
-const router = Router();
+const router = express.Router();
+const tablesController = new TablesController();
 
 /**
  * @swagger
@@ -22,7 +23,7 @@ const router = Router();
  *       201:
  *         description: Returns the newly created table
  */
-router.post('/table', authenticateToken, TablesController.createTable);
+router.post('/table', authenticateToken, tablesController.createTable);
 
 /**
  * @swagger
@@ -41,7 +42,7 @@ router.post('/table', authenticateToken, TablesController.createTable);
  *       200:
  *         description: Returns the table
  */
-router.get('/table/:tableId', authenticateToken, TablesController.getTable);
+router.get('/table/:tableId', authenticateToken, tablesController.getTable);
 
 /**
  * @swagger
@@ -68,7 +69,7 @@ router.get('/table/:tableId', authenticateToken, TablesController.getTable);
  *       200:
  *         description: Returns the updated table
  */
-router.put('/table/:tableId', authenticateToken, TablesController.updateTable);
+router.put('/table/:tableId', authenticateToken, tablesController.updateTable);
 
 /**
  * @swagger
@@ -87,7 +88,7 @@ router.put('/table/:tableId', authenticateToken, TablesController.updateTable);
  *       200:
  *         description: Table deleted successfully
  */
-router.delete('/table/:tableId', authenticateToken, TablesController.deleteTable);
+router.delete('/table/:tableId', authenticateToken, tablesController.deleteTable);
 
 /**
  * @swagger
@@ -99,7 +100,7 @@ router.delete('/table/:tableId', authenticateToken, TablesController.deleteTable
  *       200:
  *         description: Returns the last table
  */
-router.get('/table/current', authenticateToken, TablesController.getLastTable);
+router.get('/table/current', authenticateToken, tablesController.getLastTable);
 
 /**
  * @swagger
@@ -118,7 +119,7 @@ router.get('/table/current', authenticateToken, TablesController.getLastTable);
  *       200:
  *         description: Returns cellules by table ID
  */
-router.get('/table/:tableId/cellules', authenticateToken, TablesController.getCellulesTable);
+router.get('/table/:tableId/cellules', authenticateToken, tablesController.getCellulesTable);
 
 /**
  * @swagger
@@ -130,6 +131,6 @@ router.get('/table/:tableId/cellules', authenticateToken, TablesController.getCe
  *       200:
  *         description: Returns the tables
  */
-router.get('/tables', freeAuthenticateToken, TablesController.getAllTables);
+router.get('/tables', freeAuthenticateToken, tablesController.getAllTables);
 
 export default router;

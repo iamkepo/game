@@ -1,34 +1,35 @@
-import TablesModel from "../models/tablesModel.js";
+import { validationError } from '../helpers/errorsHandler.js';
+import { tablesService, tablesModel } from '../models/tablesModel.js';
 
-class TablesController extends TablesModel {
-  static async createTable(req, res) {
+class TablesController {
+  async createTable(req, res) {
     try {
       const table = req.body;
-      const validationResult = await this.validateSchema(table);
-      if (validationResult.error) {
-        return res.status(400).json({ error: validationResult.error});
+      const validationResult = await tablesModel.validateSchema(table);
+      if (validationResult?.error) {
+        return res.status(400).json({ error: validationError(validationResult.error)});
       }
 
-      const newTable = await this.add(req.body);
+      const newTable = await tablesService.add(req.body);
       res.status(201).json(newTable);
     } catch (error) {
       res.status(400).json({ error: `Table creation failed: ${error.message}` });
     }
   }
 
-  static async getAllTables(req, res) {
+  async getAllTables(req, res) {
     try {
-      const allTables = await this.getAll();
+      const allTables = await tablesService.getAll();
       res.status(200).json(allTables);
     } catch (error) {
       res.status(500).json({ error: 'Get all tables failed: Internal Server Error' });
     }
   }
 
-  static async getTable(req, res) {
+  async getTable(req, res) {
     try {
       const tableId = req.params.id;
-      const table = await this.get(tableId);
+      const table = await tablesService.get(tableId);
       if (!table) {
         return res.status(404).json({ error: 'Table not found' });
       }
@@ -38,14 +39,14 @@ class TablesController extends TablesModel {
     }
   }
 
-  static async updateTable(req, res) {
+  async updateTable(req, res) {
     try {
       const tableId = req.params.id;
-      const validationResult = await this.validateSchema(req.body);
-      if (validationResult.error) {
-        return res.status(400).json({ error: validationResult.error});
+      const validationResult = await tablesModel.validateSchema(req.body);
+      if (validationResult?.error) {
+        return res.status(400).json({ error: validationError(validationResult.error)});
       }
-      const updateResult = await this.update(tableId, req.body);
+      const updateResult = await tablesService.update(tableId, req.body);
       if (!updateResult) {
         return res.status(404).json({ error: 'Table not found' });
       }
@@ -55,10 +56,10 @@ class TablesController extends TablesModel {
     }
   }
 
-  static async deleteTable(req, res) {
+  async deleteTable(req, res) {
     try {
       const tableId = req.params.id;
-      const deleteResult = await this.delete(tableId);
+      const deleteResult = await tablesService.delete(tableId);
       if (!deleteResult) {
         return res.status(404).json({ error: 'Table not found' });
       }
@@ -68,41 +69,41 @@ class TablesController extends TablesModel {
     }
   }
 
-  static async getLastTable(req, res) {
+  async getLastTable(req, res) {
     try {
-      const lastTable = await this.getLast();
+      const lastTable = await tablesModel.getLast();
       res.status(200).json(lastTable);
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 
-  static async getCellulesTable(req, res) {
+  async getCellulesTable(req, res) {
     try {
       const { tableId } = req.params;
-      const cellules = await this.getCellules(tableId);
+      const cellules = await tablesModel.getCellules(tableId);
       res.status(200).json(cellules);
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 
-  static async addOneCelluleTable(req, res) {
+  async addOneCelluleTable(req, res) {
     try {
       const { tableId } = req.params;
       const celluleData = req.body;
-      const result = await this.addOneCellule(tableId, celluleData);
+      const result = await tablesModel.addOneCellule(tableId, celluleData);
       res.status(201).json(result);
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   }
   
-  static async addManyCellulesTable(req, res) {
+  async addManyCellulesTable(req, res) {
     try {
       const { tableId } = req.params;
       const cellulesData = req.body;
-      const result = await this.addManyCellules(tableId, cellulesData);
+      const result = await tablesModel.addManyCellules(tableId, cellulesData);
       res.status(201).json(result);
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });

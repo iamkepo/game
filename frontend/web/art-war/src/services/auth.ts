@@ -34,7 +34,6 @@ const services = {
             .method(HttpRequestType.POST)
             .setData(data)
             .then(async (response: AxiosResponse) => {
-               store.dispatch(loginSuccess(response.data))
                resolve(response.data);
             })
             .catch((error) => {
@@ -48,8 +47,8 @@ const services = {
             .append(endPoints.me)
             .method(HttpRequestType.GET)
             .then(async (response: AxiosResponse) => {
-               store.dispatch(setUser(response.data.user));
-               resolve(response.data.user);
+               store.dispatch(setUser(response.data));
+               resolve(response.data);
             })
             .catch((error) => {
                reject(error);
