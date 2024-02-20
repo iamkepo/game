@@ -85,4 +85,19 @@ router.post('/color/user', authenticateToken, colorsController.addUserToColor);
  */
 router.get('/color/:userId', authenticateToken, colorsController.getColor);
 
+/**
+ * @swagger
+ * /colors/me:
+ *   get:
+ *     summary: Get my all colors.
+ *     description: Récupère la liste des couleurs attribuées à une équipe spécifiée.
+ *     tags: [Colors]
+ *     responses:
+ *       200:
+ *         description: Succès. Retourne la liste des couleurs de l'équipe.
+ *       500:
+ *         description: Erreur interne du serveur.
+ */
+router.get('/colors/me', authenticateToken, colorsController.getMyColors);
+
 export default router;

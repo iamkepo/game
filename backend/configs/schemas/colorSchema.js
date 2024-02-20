@@ -8,6 +8,7 @@ const colorSchema = Joi.object({
   blue: Joi.number().min(0).max(255).required(),
   alpha: Joi.number().min(0).max(1).required(),
   status: Joi.boolean().default(false),
+  create_order: Joi.number().required(),
   create_date: Joi.date(),
   update_date: Joi.date(),
 });

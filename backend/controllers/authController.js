@@ -2,8 +2,9 @@ import jwt from 'jsonwebtoken';
 import { hash, compare } from 'bcrypt';
 import { usersService, usersModel } from '../models/usersModel.js';
 import { generateAccessToken, generateRefreshToken } from '../helpers/jwtUtils.js';
-import { saltRounds, userInitData } from '../helpers/constants.js';
+import { colorLimit, maxColors, saltRounds, userInitData } from '../helpers/constants.js';
 import { validationError } from '../helpers/errorsHandler.js';
+import { colorsModel } from '../models/colorsModel.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -28,10 +29,15 @@ export default class AuthController {
       const hashedPassword = await hash(credentials.password, saltRounds);
       credentials.password = hashedPassword;
 
-      const newUser = await usersService.add(credentials);
-      if (!newUser.insertedId) {
-        return res.status(405).json({ error: 'User creation failed' });
+      const count = await colorsModel.getColorsCount();
+      if ((maxColors - count) >= colorLimit) {
+        const colors = await colorsModel.generateNewColors(colorLimit);
+      } else if ((maxColors - count) !== 0) {
+        const colors = await colorsModel.generateNewColors((maxColors - count));
       }
+
+
+      const newUser = await usersService.add(credentials);
 
       res.status(201).json(newUser);
     } catch (error) {
