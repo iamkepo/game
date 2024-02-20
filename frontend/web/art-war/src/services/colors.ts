@@ -34,6 +34,19 @@ const services = {
             });
       });
    },
+   getMyColors() {
+      return new Promise((resolve, reject) => {
+         new Request()
+            .append(endPoints.colorsMe)
+            .method(HttpRequestType.GET)
+            .then(async (response: AxiosResponse) => {
+               resolve(response.data);
+            })
+            .catch((error) => {
+               reject(error);
+            });
+      });
+   },
 
 };
 

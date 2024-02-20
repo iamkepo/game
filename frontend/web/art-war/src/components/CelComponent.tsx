@@ -1,13 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 interface CelProps {
-  cel: any;
+  cel: string;
   backgroundColor: string;
   padding: string
 }
 
 const CelComponent: React.FC<CelProps> = ({cel, backgroundColor, padding}) => {
-  const [color, setColor] = useState<string | null>(null);  
+  const [color, setColor] = useState<string>('');  
 
   return (
     <td 

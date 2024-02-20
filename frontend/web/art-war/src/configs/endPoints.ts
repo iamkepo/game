@@ -5,4 +5,5 @@ export const endPoints = {
   me: "/user/me",
   colorUser: "/color/user",
   colorsUnassigned: "/colors/unassigned",
+  colorsMe: "/colors/me",
 };

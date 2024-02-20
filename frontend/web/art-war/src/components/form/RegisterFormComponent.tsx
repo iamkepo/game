@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Button, Form, Modal, Row, Col } from 'react-bootstrap';
-// import PaletteColorsComponent from '../PaletteColorsComponent';
 import ErrorAlertComponent from '../ErrorAlertComponent';
 import PasswordInputComponent from '../PasswordInputComponent';
 import { api } from '@/services/api';

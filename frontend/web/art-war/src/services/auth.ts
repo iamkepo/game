@@ -2,9 +2,6 @@ import { AxiosError, AxiosResponse } from "axios";
 import { HttpRequestType } from "@/core";
 import { endPoints } from "@/configs";
 import Request from "./request";
-import store from "@/lib/store";
-import { loginSuccess } from "@/lib/reducers/authReducer";
-import { setUser } from "@/lib/reducers/userReducer";
 
 
 const services = {
@@ -18,7 +15,6 @@ const services = {
             })
             .method(HttpRequestType.POST)
             .then(async (response: AxiosResponse) => {
-               store.dispatch(loginSuccess(response.data))
                resolve(response.data);
             })
             .catch((error: AxiosError) => {
@@ -47,7 +43,6 @@ const services = {
             .append(endPoints.me)
             .method(HttpRequestType.GET)
             .then(async (response: AxiosResponse) => {
-               store.dispatch(setUser(response.data));
                resolve(response.data);
             })
             .catch((error) => {

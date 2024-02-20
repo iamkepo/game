@@ -1,13 +1,11 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { endPoints, envConstant } from '@/configs';
 import { HttpRequestContentType, HttpRequestType } from '@/core';
-import store from '@/lib/store';
-import { logoutSuccess, refreshSuccess } from '@/lib/reducers/authReducer';
 
 export const client = axios.create();
 
 class Request {   
-  public config: any;
+  private config: any;
 
   private isRefreshing = false;
   private failedQueue: { resolve: (token: string | null) => void; reject: (error: AxiosError) => void }[] = [];
@@ -25,7 +23,7 @@ class Request {
   }
 
   private handleRequest(config: any): any {
-    const accessToken = store.getState().auth.accessToken; // Obtenez l'access token depuis votre solution de gestion d'authentification
+    const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -33,7 +31,6 @@ class Request {
   }
 
   private handleRequestError(error: AxiosError): Promise<AxiosError> {
-    // Implémentez ici la logique pour gérer les erreurs de demande
     return Promise.reject(error);
   }
 
@@ -62,18 +59,16 @@ class Request {
       originalRequest._retry = true;
       this.isRefreshing = true;
 
-      const refreshToken = store.getState().auth.refreshToken; // Obtenez le refresh token depuis votre solution de gestion d'authentification
+      const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) {
-        store.dispatch(logoutSuccess())
-        return Promise.reject(error);
+        // Logique pour gérer le cas où le refreshToken est manquant
       }
 
       try {
         const refreshResponse = await client.post(endPoints.refreshToken, { refreshToken });
         const newAccessToken = refreshResponse.data.accessToken;
-        store.dispatch(refreshSuccess({accessToken: newAccessToken}))
+        localStorage.setItem('accessToken', newAccessToken);
 
-        // Retry the original request
         originalRequest.headers['Authorization'] = 'Bearer ' + newAccessToken;
         
         this.processQueue(newAccessToken);
@@ -95,12 +90,18 @@ class Request {
     });
     this.failedQueue = [];
   }
+
+  public headersAuthorization(token: string | null) {
+    this.config.headers = { ...this.config.headers, "Authorization": token };
+    return this;
+  }
+
   public contentType(type: HttpRequestContentType) {
     this.config.headers = { ...this.config.headers, "content-type": type };
     return this;
   }
 
-  public responseType(type: ResponseType) {
+  public responseType(type: string) {
     this.config.headers = { ...this.config.headers, responseType: type };
   }
 
@@ -118,44 +119,40 @@ class Request {
     this.config.params = params;
     return this;
   }
+
   public setData(data: any): this {
     this.config.data = data;
 
-    if (
-       this.config.headers["Content-type"] ===
-       "application/x-www-form-urlencoded"
-    ) {
-       this.config.data = JSON.stringify(data);
+    if (this.config.headers["Content-type"] === "application/x-www-form-urlencoded") {
+      this.config.data = JSON.stringify(data);
     }
 
-    if (
-       this.config.headers["Content-type"] ===
-       HttpRequestContentType.FORM_DATA
-    ) {
-       const formData = new FormData();
-       for (let key in data) {
-          const fieldValue = data[key];
-          if (Array.isArray(fieldValue)) {
-             fieldValue.forEach((x) => {
-                if (x) {
-                   formData.append(`${key}[]`, x);
-                } else {
-                   formData.append(`${key}[]`, "");
-                }
-             });
+    if (this.config.headers["Content-type"] === HttpRequestContentType.FORM_DATA) {
+      const formData = new FormData();
+      for (let key in data) {
+        const fieldValue = data[key];
+        if (Array.isArray(fieldValue)) {
+          fieldValue.forEach((x) => {
+            if (x) {
+              formData.append(`${key}[]`, x);
+            } else {
+              formData.append(`${key}[]`, "");
+            }
+          });
+        } else {
+          if (data[key]) {
+            formData.append(key, data[key]);
           } else {
-             if (data[key]) {
-                formData.append(key, data[key]);
-             } else {
-                formData.append(key, "");
-             }
+            formData.append(key, "");
           }
-       }
-       this.config.data = formData;
+        }
+      }
+      this.config.data = formData;
     }
 
     return this;
- }
+  }
+
   public async then(callback: (response: AxiosResponse) => void): Promise<void> {
     const response_1 = await client(this.config);
     callback(response_1);

@@ -3,12 +3,12 @@
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-interface UserState {
-  user: object | null;
+export interface UserState {
+  user: object;
 }
 
-const initialState: UserState = {
-  user: null, 
+export const initialState: UserState = {
+  user: {}, 
 };
 
 const userSlice = createSlice({

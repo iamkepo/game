@@ -22,9 +22,10 @@ const LoginFormComponent: React.FC<LoginFormProps> = ({show, handleClose, handle
     
     api.login({ email, password })
     .then((data: any)=>{
-      // console.log(data);
+      window.localStorage.setItem("accessToken", data.accessToken)
       window.localStorage.setItem('refreshToken', data?.refreshToken)
-      handleClose();
+      // handleClose();
+      window.location.reload()
     })
     .catch(err=> {      
       if (err?.response?.data?.error) {

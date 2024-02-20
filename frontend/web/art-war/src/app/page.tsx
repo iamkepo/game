@@ -1,20 +1,25 @@
 "use client";
 import React, { Component, ReactNode } from "react";
 import { Col, Container, Row } from "react-bootstrap";
-import { Provider } from 'react-redux';
-import store from "@/lib/store";
 import SocketService from "@/configs/socket-service";
 
-import Header from "@/components/Header";
-import RightSidebar from "@/components/RightSidebar";
-import LeftSidebar from "@/components/LeftSidebar";
-import CelComponent from "@/components/CelComponent";
+import RightSidebar from "@/layouts/RightSidebar";
+import LeftSidebar from "@/layouts/LeftSidebar";
 import PaletteColorsComponent from '@/components/PaletteColorsComponent';
+import { api } from "@/services/api";
+import BoardComposant from "@/components/BoardComponant";
+import Header from "@/layouts/Header";
 
 interface HomeState {
-  tab: string[][];
+  config: {
+    rows: number;
+    cels: number;
+  };
   padding: string;
   showPalette: boolean;
+  isMounted: boolean;
+  isAuthenticated: boolean;
+  user: object;
 }
 
 export default class Home extends Component<{}, HomeState> {
@@ -23,85 +28,85 @@ export default class Home extends Component<{}, HomeState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      tab: [],
+      config: {
+        rows: 0,
+        cels: 0
+      },
       padding: '5px',
       showPalette: false,
+      isMounted: false,
+      isAuthenticated: false,
+      user: {}, 
     };
     this.socketService = new SocketService();
   }
 
   componentDidMount(): void {
-    let rows: string[][] = [];
-    
-    for (let i = 0; i < 150; i++) {
-      let cels: string[] = [];
-      for (let j = 0; j < 150; j++) {
-        cels[j] = '';
-      }
-      rows[i] = cels;
-    }
-    
-    this.setState({ tab: rows });  
-    this.socketService.connect();
-    this.setState({ showPalette: true });  
-  }
+    if (!this.state.isMounted) {
+      
+      this.setState({ config: {rows: 150, cels: 150} }); 
 
-  getRandomColor(): string {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+      this.socketService.connect();
+
+      let token = window.localStorage.getItem("refreshToken");
+      if (token) {
+        this.fetchCurrentUser();
+      }
+      console.log("Le composant est monté.");
+      this.setState({ isMounted: true });
     }
-    return color;
   }
+  fetchCurrentUser = () => {
+    api.fetchCurrentUser()
+    .then((data: any)=>{
+      // console.log(data);
+      this.setState({ user: data, isAuthenticated: true });  
+      this.getMyColors();
+    })
+    .catch(err=> {
+      console.log(err?.response?.data);
+    })
+  };
   
+  getMyColors = () => {
+    api.getMyColors()
+    .then((data: any)=>{
+      // console.log(data);
+      if (data.length == 0) {
+        this.setState({ showPalette: true });  
+      }
+    })
+    .catch(err=> {
+      console.log(err?.response?.data);
+    })
+  };
   setZoom = (event: React.ChangeEvent<HTMLSelectElement>) => {
     this.setState({ padding: event.target.value });
   }
 
   render(): ReactNode {
     return (
-      <Provider store={store}>
-        <Container fluid>
-          <Header />
-          <Row>
-            <Col xs={3} id="left-sidebar">
-              <LeftSidebar />
-            </Col>
-            <Col xs={6} id="page-content" className="px-0 mt-2">
-              <div id="board" className="mx-auto">
-                <table>
-                  <thead />
-                  <tbody>
-                    {this.state.tab.map((row: string[], i: number) => (
-                      <tr key={i}>
-                        {row.map((cel: string, j: number) => (
-                          <CelComponent 
-                            key={j} 
-                            cel={cel}
-                            backgroundColor={this.getRandomColor()}
-                            padding={this.state.padding}
-                          />                
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot />
-                </table>
-              </div>
-              
-            </Col>
-            <Col xs={3} id="right-sidebar">
-              <RightSidebar setZoom={(e: any)=> this.setZoom(e)} />
-            </Col>
-          </Row>
-          <PaletteColorsComponent 
-            show={this.state.showPalette}
-            handleShow={() => this.setState({ showPalette: true })} 
-            handleClose={() => this.setState({ showPalette: false })}
-          />
-        </Container>
-      </Provider>
+      <Container fluid>
+        <Header />
+        <Row>
+          <Col xs={3} id="left-sidebar">
+            <LeftSidebar />
+          </Col>
+          <Col xs={6} id="page-content" className="px-0 mt-2">
+            <BoardComposant 
+              config={this.state.config} 
+              padding={this.state.padding} 
+            /> 
+          </Col>
+          <Col xs={3} id="right-sidebar">
+            <RightSidebar setZoom={(e: any)=> this.setZoom(e)} />
+          </Col>
+        </Row>
+        <PaletteColorsComponent 
+          show={this.state.showPalette}
+          handleClose={() => this.setState({ showPalette: false })}
+        />
+      </Container>
     );
   }
 }

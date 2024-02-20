@@ -1,8 +1,21 @@
-import { useDispatch, useSelector, useStore } from 'react-redux'
-import type { TypedUseSelectorHook } from 'react-redux'
-import type { RootState, AppDispatch, AppStore } from './store'
+import { connect } from 'react-redux';
+import { bindActionCreators, Dispatch } from 'redux';
+import { RootState } from './types';
+import { setUser } from './reducers/userReducer'; 
 
-// Use throughout your app instead of plain `useDispatch` and `useSelector`
-export const useAppDispatch: () => AppDispatch = useDispatch
-export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
-export const useAppStore: () => AppStore = useStore
+const mapStateToProps = (state: RootState) => {
+  return {
+    user: state // Remplacez 'user' par le nom de votre état dans le magasin
+  };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return bindActionCreators({
+     setUser 
+  }, dispatch);
+};
+
+
+const hookStore = (component: React.ComponentType<any>) => connect(mapStateToProps, mapDispatchToProps)(component);
+
+export default hookStore;

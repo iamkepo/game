@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
-import RegisterFormComponent from './form/RegisterFormComponent';
-import LoginFormComponent from './form/LoginFormComponent';
+import RegisterFormComponent from '../components/form/RegisterFormComponent';
+import LoginFormComponent from '../components/form/LoginFormComponent';
 import { api } from '@/services/api';
 
 interface RightSidebarProps {
