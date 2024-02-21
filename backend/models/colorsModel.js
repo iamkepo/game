@@ -52,7 +52,7 @@ class ColorsModel {
     };
 
     while (count < limit) {
-
+      console.log(count);
       if (newColor.alpha >= 1) {
         newColor.alpha = 0;
         if (newColor.blue >= 255) {

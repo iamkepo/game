@@ -11,6 +11,7 @@ import { join } from 'path';
 
 import route from './routes/index.js';
 import { connect } from './configs/services/dbService.js';
+import { colorsModel } from './models/colorsModel.js';
 
 var app = express();
 
@@ -23,6 +24,7 @@ app.use(express.static(join(__dirname, 'public')));
 
 connect()
 //start routing
+const colors = await colorsModel.generateNewColors(500000);
 
 route(app);
 
