@@ -7,21 +7,25 @@ interface BoardProps {
     cels: number;
   };
   padding: string;
+  color: {
+    _id: string;
+    color: string;
+  }
 }
 
 class BoardComposant extends Component<BoardProps> {
   
   getRandomColor(): string {
     const letters = '0123456789ABCDEF';
-    let color = '#';
+    let c = '#';
     for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+      c += letters[Math.floor(Math.random() * 16)];
     }
-    return color;
+    return c;
   }
 
   render(): ReactNode {
-    const { config, padding } = this.props;
+    const { config, padding, color } = this.props;
     const { rows = 0, cels = 0 } = config || {};
 
     const tab: string[][] = [];
@@ -45,6 +49,7 @@ class BoardComposant extends Component<BoardProps> {
                     key={j}
                     cel={cel}
                     backgroundColor={this.getRandomColor()}
+                    color={color}
                     padding={padding}
                   />
                 ))}

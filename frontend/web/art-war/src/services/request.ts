@@ -1,14 +1,13 @@
-import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
+'use client';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 import { endPoints, envConstant } from '@/configs';
 import { HttpRequestContentType, HttpRequestType } from '@/core';
 
 export const client = axios.create();
-
+let isRefreshing: boolean = false;
+let failedQueue: { resolve: (value: string | PromiseLike<string | null> | null) => void; reject: (reason?: any) => void; }[] = []
 class Request {   
-  private config: any;
-
-  private isRefreshing = false;
-  private failedQueue: { resolve: (token: string | null) => void; reject: (error: AxiosError) => void }[] = [];
+  public config: any;
 
   constructor() {
     this.config = {
@@ -24,6 +23,8 @@ class Request {
 
   private handleRequest(config: any): any {
     const accessToken = localStorage.getItem('accessToken');
+    // console.log(accessToken);
+    
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
@@ -43,9 +44,10 @@ class Request {
 
     if (error.response?.status === 401 && !originalRequest?._retry && !error.config.baseURL.includes("login")) {
       
-      if (this.isRefreshing) {
+      console.log(isRefreshing);
+      if (isRefreshing) {
         return new Promise<string | null>((resolve, reject) => {
-          this.failedQueue.push({ resolve, reject });
+          failedQueue.push({ resolve, reject });
         })
           .then((token) => {
             originalRequest.headers['Authorization'] = 'Bearer ' + token;
@@ -57,38 +59,49 @@ class Request {
       }
 
       originalRequest._retry = true;
-      this.isRefreshing = true;
+      isRefreshing = true;
 
       const refreshToken = localStorage.getItem('refreshToken');
+      console.log(refreshToken);
+      
       if (!refreshToken) {
-        // Logique pour gérer le cas où le refreshToken est manquant
+        window.localStorage.clear()
+        return Promise.reject(error);
       }
 
       try {
         const refreshResponse = await client.post(endPoints.refreshToken, { refreshToken });
+        console.log(refreshResponse);
+        
         const newAccessToken = refreshResponse.data.accessToken;
         localStorage.setItem('accessToken', newAccessToken);
 
         originalRequest.headers['Authorization'] = 'Bearer ' + newAccessToken;
         
-        this.processQueue(newAccessToken);
+        this.processQueue(null, newAccessToken);
         return client(originalRequest);
       } catch (refreshError) {
-        this.processQueue(null);
+        // console.log(refreshError);
+        window.localStorage.clear()
+        this.processQueue(refreshError, null);
         return Promise.reject(refreshError);
       } finally {
-        this.isRefreshing = false;
+        isRefreshing = false;
       }
     }
 
     return Promise.reject(error);
   }
 
-  private processQueue(token: string | null): void {
-    this.failedQueue.forEach((prom) => {
-      prom.resolve(token);
+  private processQueue(error: any, token: string | null): void {
+    failedQueue.forEach((prom) => {
+      if (error) {
+        prom.reject(error);
+      } else {
+        prom.resolve(token);
+      }
     });
-    this.failedQueue = [];
+    failedQueue = [];
   }
 
   public headersAuthorization(token: string | null) {

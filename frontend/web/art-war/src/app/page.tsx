@@ -20,6 +20,10 @@ interface HomeState {
   isMounted: boolean;
   isAuthenticated: boolean;
   user: object;
+  color: {
+    _id: string;
+    color: string
+  }
 }
 
 export default class Home extends Component<{}, HomeState> {
@@ -36,7 +40,11 @@ export default class Home extends Component<{}, HomeState> {
       showPalette: false,
       isMounted: false,
       isAuthenticated: false,
-      user: {}, 
+      user: {},
+      color: {
+        _id: '',
+        color: ''
+      }
     };
     this.socketService = new SocketService();
   }
@@ -64,7 +72,7 @@ export default class Home extends Component<{}, HomeState> {
       this.getMyColors();
     })
     .catch(err=> {
-      console.log(err?.response?.data);
+      console.log(err);
     })
   };
   
@@ -95,6 +103,7 @@ export default class Home extends Component<{}, HomeState> {
           <Col xs={6} id="page-content" className="px-0 mt-2">
             <BoardComposant 
               config={this.state.config} 
+              color={this.state.color} 
               padding={this.state.padding} 
             /> 
           </Col>
@@ -104,6 +113,7 @@ export default class Home extends Component<{}, HomeState> {
         </Row>
         <PaletteColorsComponent 
           show={this.state.showPalette}
+          setPalette={(e: any)=> this.setState({ color: e })}
           handleClose={() => this.setState({ showPalette: false })}
         />
       </Container>
